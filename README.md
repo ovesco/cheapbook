@@ -11,3 +11,8 @@ The objective is to implement a simple and basic Scala sandbox environment, like
 
 The developer could choose between various "saved" environment (ones that could be dynamically built from database), load them and start scripting.
 
+```
+|----------|    |--------------------------------|    |--------------------------|    |--------------------|
+|Create env| -> |Add some dependencies (maven...)| -> |Env saved to DB and loaded| -> |Dev starts scripting|
+|----------|    |--------------------------------|    |--------------------------|    |--------------------|
+```
