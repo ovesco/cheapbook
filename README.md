@@ -16,3 +16,6 @@ The developer could choose between various "saved" environment (ones that could 
 |Create env| -> |Add dependencies (maven...)| -> |Env saved to DB and loaded| -> |Dev starts scripting|
 |----------|    |---------------------------|    |--------------------------|    |--------------------|
 ```
+
+## Data and dependencies
+The project would be useless without the possibility to feed the environment with dependencies or external data. The system will thus ship with tools to load Maven dependencies (or from similar repos) and/or external data like Json files, CSV tables...
