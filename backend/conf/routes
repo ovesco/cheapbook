@@ -13,4 +13,40 @@ GET     /message                    controllers.AsyncController.message
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-      
+#Register a user
+POST    /register
+
+#Log as user
+POST    /login
+
+#Run the code in docker and send the result to frontend
+GET     /run
+
+#Stop the code running in docker environnment
+GET     /stop
+
+
+#Get all the envs in the DB
+GET     /env
+
+#Create an env in db
+POST    /env
+
+#Update an env in db
+PUT     /env
+
+#Delete an env in db
+DELETE  /env
+
+#Get all the dependencies of an env in db
+GET     /dependencies
+
+#Create a dependency for an env
+POST    /dependencies
+
+#Update a dependency
+PUT     /dependencies
+
+#Delete a dependency
+DELETE  /dependencies
+
