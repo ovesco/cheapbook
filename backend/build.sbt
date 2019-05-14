@@ -16,3 +16,6 @@ unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/
 
 libraryDependencies += "com.typesafe.play" %% "play-slick" % "4.0.0"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
+
+libraryDependencies += "com.google.code.gson" % "gson" % "2.8.5"
+

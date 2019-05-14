@@ -14,39 +14,38 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 #Register a user
-POST    /register
+POST    /register controllers.UserController.register()
 
 #Log as user
-POST    /login
+POST    /login controllers.UserController.login()
 
 #Run the code in docker and send the result to frontend
-GET     /run
+GET     /run controllers.ExeController.run()
 
 #Stop the code running in docker environnment
-GET     /stop
+GET     /stop controllers.ExeController.stop()
 
 
 #Get all the envs in the DB
-GET     /env
+GET     /env controllers.EnvController.get()
 
 #Create an env in db
-POST    /env
+POST    /env controllers.EnvController.post()
 
 #Update an env in db
-PUT     /env
+PUT     /env controllers.EnvController.put()
 
 #Delete an env in db
-DELETE  /env
+DELETE  /env controllers.EnvController.delete()
 
 #Get all the dependencies of an env in db
-GET     /dependencies
+GET     /dependencies controllers.DependenciesController.get()
 
 #Create a dependency for an env
-POST    /dependencies
+POST    /dependencies controllers.DependenciesController.post()
 
 #Update a dependency
-PUT     /dependencies
+PUT     /dependencies controllers.DependenciesController.put()
 
 #Delete a dependency
-DELETE  /dependencies
-
+DELETE  /dependencies controllers.DependenciesController.delete()
