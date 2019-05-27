@@ -19,3 +19,6 @@ libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 
 libraryDependencies += "com.google.code.gson" % "gson" % "2.8.5"
 
+libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+
