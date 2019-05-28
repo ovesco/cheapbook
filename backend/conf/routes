@@ -19,6 +19,9 @@ POST    /register controllers.UserController.register()
 #Log as user
 POST    /login controllers.UserController.login()
 
+#Logout user
+POST    /logout controllers.UserController.logout()
+
 #Run the code in docker and send the result to frontend
 GET     /run controllers.ExeController.run()
 
