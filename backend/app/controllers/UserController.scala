@@ -3,13 +3,11 @@ package controllers
 import DAO.UsersDAO
 import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AbstractController, ControllerComponents, Result}
+import play.api.mvc.{AbstractController, ControllerComponents}
 import services.Utility
 import services.Utility.gson
 
-import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future, Promise}
-import scala.util.{Failure, Success}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class UserController @Inject()(cc: ControllerComponents,
