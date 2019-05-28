@@ -1,10 +1,11 @@
 package controllers
 
+import DAO.DependenciesDAO
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AbstractController, ControllerComponents}
 
 @Singleton
-class DependenciesController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class DependenciesController @Inject()(cc: ControllerComponents,dependeciesDao:DependenciesDAO) extends AbstractController(cc) {
 
 
   def get() = Action { implicit request =>

@@ -1,10 +1,11 @@
 package controllers
 
+import DAO.EnvironnementDAO
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AbstractController, ControllerComponents}
 
 @Singleton
-class EnvController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class EnvController @Inject()(cc: ControllerComponents,envDao:EnvironnementDAO) extends AbstractController(cc) {
 
 
   def get() = Action { implicit request =>
