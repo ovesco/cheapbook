@@ -3,13 +3,15 @@ package services
 import com.google.gson.Gson
 
 import scala.collection.immutable.HashMap
+import scala.util.Random
 
 object Utility {
   val gson = new Gson
   var userTokens: Map[String, String] = new HashMap()//[token, username]
 
   def generateTokenForUser(username: String): String = {
-    val newToken = "new token"// todo token generator
+    val x = Random.alphanumeric
+    val newToken = (x take 32).mkString
     userTokens += (newToken -> username)
     newToken
   }
