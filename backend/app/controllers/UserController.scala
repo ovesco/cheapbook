@@ -17,6 +17,7 @@ class UserController @Inject()(cc: ControllerComponents,
 
   case class RegisterBody(username: String, password: String)
   case class LoginBody(username: String, password: String)
+  case class LoginResponse(token: String)
   case class LogoutBody(token: String)
 
   def register() = Action.async { implicit request =>
@@ -34,7 +35,8 @@ class UserController @Inject()(cc: ControllerComponents,
       dbr =>
         if (dbr.isDefined) {
           val token = Utility.generateTokenForUser(body.username)
-          Ok(s"$dbr You are logged in as: ${body.username} with token: $token")
+          val json = gson.toJson(LoginResponse(token), classOf[LoginResponse])
+          Ok(json)
         } else {
           Status(400)("Unable to login")
         }
