@@ -24,7 +24,12 @@ class UserController @Inject()(cc: ControllerComponents,
     val rb: RegisterBody = gson.fromJson(request.body.asJson.mkString, classOf[RegisterBody])
     usersDao.createIfNotExists()// TODO remove
     val future = usersDao.createUser(Model.Users(Option.empty, rb.username, rb.password))
-    future.map(dbr => Ok(s"$dbr You have register a new user with username: ${rb.username} and password: ${rb.password}"))// todo
+    future map {
+        dbr => Ok(s"$dbr You have register a new user with username: ${rb.username} and password: ${rb.password}")
+      } recover {
+        case _ => Status(400)("Unable to register")
+      }
+
   }
 
   def login() = Action { implicit request =>
