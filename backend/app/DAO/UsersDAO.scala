@@ -19,7 +19,7 @@ trait UsersComponent{
 
   class UsersTable(tag: Tag) extends Table[Users](tag,"USERS"){
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc) // Primary key, auto-incremented
-    def username = column[String]("USERNAME", O.Unique)
+    def username = column[String]("USERNAME", O.Unique, O.Length(32))
     def password = column[String]("PASSWORD")
 
     def * = (id.?, username,password ) <> (Users.tupled, Users.unapply)
