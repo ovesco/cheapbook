@@ -1,16 +1,18 @@
 package controllers
 
 import DAO.UsersDAO
+import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AbstractController, ControllerComponents, Result}
 import services.Utility.gson
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success}
 
 @Singleton
 class UserController @Inject()(cc: ControllerComponents,
+                               actorSystem: ActorSystem,
                                usersDao :UsersDAO)
                               (implicit exec: ExecutionContext) extends AbstractController(cc) {
 
@@ -18,18 +20,10 @@ class UserController @Inject()(cc: ControllerComponents,
   case class LoginBody(username: String, password: String)
   case class LogoutBody(token: String)
 
-  def register() = Action { implicit request =>
+  def register() = Action.async { implicit request =>
     val rb: RegisterBody = gson.fromJson(request.body.asJson.mkString, classOf[RegisterBody])
     val future = usersDao.createUser(Model.Users(Option.empty, rb.username, rb.password))
-    var temp: Result = Ok("bbbbbbbbb")
-    future onComplete {
-      case Success(_) => temp = Ok(s"You have register a new user with username: ${rb.username} and password: ${rb.password}")// todo
-      case Failure(_) => temp = Status(400)(s"You cannot register a user with username: ${rb.username} and password: ${rb.password}")
-    }
-
-    Await.result(future, Duration(1, "s"))
-    temp
-    //Ok("aaaaaaaaaa")// todo
+    future.map(dbr => Ok(s"$dbr You have register a new user with username: ${rb.username} and password: ${rb.password}"))// todo
   }
 
   def login() = Action { implicit request =>
