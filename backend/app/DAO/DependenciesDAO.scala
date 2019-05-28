@@ -26,6 +26,9 @@ class DependenciesDAO @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
   import profile.api._
   val dependencies = TableQuery[DependenciesTable]
+
+
+
   def createIfNotExists(){
     val schema = dependencies.schema
     db.run(schema.createIfNotExists).onComplete({
@@ -42,7 +45,7 @@ extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
   def updateDependencies(dep: Dependencies) = {
     val query = for {
       d <- dependencies
-      if d.id == dep.id
+      if d.id === dep.id
     }yield d.dependencies
     val update = query.update(dep.dependencies)
   }
@@ -58,5 +61,7 @@ extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
     val query = dependencies map (d => d.dependencies)+= dep.dependencies
     db.run(query)
   }
+
+  createIfNotExists()
 
 }

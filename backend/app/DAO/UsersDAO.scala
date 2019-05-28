@@ -32,6 +32,8 @@ class UsersDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   extends UsersComponent  with HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
   val users = TableQuery[UsersTable]
+
+
   def createIfNotExists(){
     val schema = users.schema
     db.run(schema.createIfNotExists).onComplete({
@@ -49,5 +51,7 @@ class UsersDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     val query = users.filter(user => user.username === username && user.password === password).result.headOption
     db.run(query)
   }
+
+  createIfNotExists()
 
 }

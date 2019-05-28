@@ -60,4 +60,6 @@ class EnvironnementDAO @Inject() (protected val dbConfigProvider: DatabaseConfig
     val query = environnment map (e => e.code )+= env.code
     db.run(query)
   }
+
+  createIfNotExists()
 }
