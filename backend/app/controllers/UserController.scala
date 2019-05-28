@@ -21,7 +21,6 @@ class UserController @Inject()(cc: ControllerComponents,
 
   def register() = Action.async { implicit request =>
     val body: RegisterBody = gson.fromJson(request.body.asJson.mkString, classOf[RegisterBody])
-    usersDao.createIfNotExists()// TODO remove
     usersDao.createUser(Model.Users(Option.empty, body.username, body.password)) map {
         dbr => Ok(s"$dbr You have register a new user with username: ${body.username} and password: ${body.password}")
       } recover {
