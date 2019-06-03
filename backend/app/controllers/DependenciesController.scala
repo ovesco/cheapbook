@@ -3,6 +3,7 @@ package controllers
 import DAO.DependenciesDAO
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AbstractController, ControllerComponents}
+import services.Utility
 import services.Utility.gson
 
 import scala.concurrent.ExecutionContext
@@ -11,7 +12,7 @@ import scala.concurrent.ExecutionContext
 class DependenciesController @Inject()(cc: ControllerComponents,
                                        depDao: DependenciesDAO)
                                       (implicit exec: ExecutionContext) extends AbstractController(cc) {
-  
+
   case class GetBody(token: String, id: Long)
   case class PostBody(token: String, dependencies: String)
   case class PutBody(token: String, id: Long, dependencies: String)
@@ -28,7 +29,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   def post() = Action.async { implicit request =>
     val body: PostBody = gson.fromJson(request.body.asJson.mkString, classOf[PostBody])
-    depDao.addDependencies(Model.Dependencies(Option.empty, body.dependencies)) map {
+    depDao.addDependencies(Model.Dependencies(Option.empty, Utility.getUserFromToken(body.token).get, body.dependencies)) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")
@@ -37,7 +38,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   def put() = Action.async { implicit request =>
     val body: PutBody = gson.fromJson(request.body.asJson.mkString, classOf[PutBody])
-    depDao.updateDependencies(Model.Dependencies(Option(body.id), body.dependencies)) map {
+    depDao.updateDependencies(Model.Dependencies(Option(body.id), Utility.getUserFromToken(body.token).get, body.dependencies)) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")

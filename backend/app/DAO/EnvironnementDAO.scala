@@ -9,7 +9,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 
-trait EnvironnementComponent extends UsersComponent with DependenciesComponent {
+trait EnvironnementComponent extends UsersComponent {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import profile.api._

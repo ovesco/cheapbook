@@ -4,6 +4,7 @@ import DAO.EnvironnementDAO
 import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AbstractController, ControllerComponents}
+import services.Utility
 import services.Utility.gson
 
 import scala.concurrent.ExecutionContext
@@ -30,7 +31,7 @@ class EnvController @Inject()(cc: ControllerComponents,
 
   def post() = Action.async { implicit request =>
     val body: PostBody = gson.fromJson(request.body.asJson.mkString, classOf[PostBody])
-    envDao.addEnvironnement(Model.Environnement(Option.empty, body.code)) map {
+    envDao.addEnvironnement(Model.Environnement(Option.empty, Utility.getUserFromToken(body.token).get, body.code)) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")
@@ -39,7 +40,7 @@ class EnvController @Inject()(cc: ControllerComponents,
 
   def put() = Action.async { implicit request =>
     val body: PutBody = gson.fromJson(request.body.asJson.mkString, classOf[PutBody])
-    envDao.updateEnvironnement(Model.Environnement(Option(body.id), body.code)) map {
+    envDao.updateEnvironnement(Model.Environnement(Option(body.id), Utility.getUserFromToken(body.token).get, body.code)) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")
