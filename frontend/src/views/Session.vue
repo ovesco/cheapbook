@@ -2,11 +2,15 @@
     <div>
         <theme v-model="theme" :current="theme" :show="chooseTheme"
                @close="chooseTheme = false, keys = []" />
+        <environments v-model="environment" :show="chooseEnvironment"
+                      @close="chooseEnvironment = false, keys = []" />
         <a-layout>
             <a-layout-header>
                 <a-menu v-model="keys" theme="dark" mode="horizontal" :style="{lineHeight: '64px'}">
-                    <a-menu-item key="environments">Environments</a-menu-item>
-                    <a-menu-item key="close">Close session</a-menu-item>
+                    <a-menu-item key="environments" @click="chooseEnvironment = true">
+                        Environments
+                    </a-menu-item>
+                    <a-menu-item @click="$router.push('/')" key="close">Close session</a-menu-item>
                     <a-menu-item key="theme" @click="chooseTheme = true">Theme</a-menu-item>
                 </a-menu>
             </a-layout-header>
@@ -40,11 +44,13 @@ import {
 } from 'ant-design-vue';
 import Editor from '../components/Editor.vue';
 import Theme from '../components/Theme.vue';
+import Environments from '../components/Environments.vue';
 
 export default {
     components: {
         Editor,
         Theme,
+        Environments,
         aLayout: Layout,
         aLayoutHeader: Layout.Header,
         aLayoutContent: Layout.Content,
@@ -59,6 +65,8 @@ export default {
             chooseTheme: false,
             keys: [],
             theme: 'base16-light',
+            chooseEnvironment: false,
+            environment: 2,
         };
     },
 };
