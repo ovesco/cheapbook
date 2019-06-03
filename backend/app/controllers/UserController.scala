@@ -34,7 +34,7 @@ class UserController @Inject()(cc: ControllerComponents,
     usersDao.getUser(body.username, body.password) map {
       dbr =>
         if (dbr.isDefined) {
-          val token = Utility.generateTokenForUser(body.username)
+          val token = Utility.generateTokenForUser(dbr.get.id.get)
           val json = gson.toJson(LoginResponse(token), classOf[LoginResponse])
           Ok(json)
         } else {
