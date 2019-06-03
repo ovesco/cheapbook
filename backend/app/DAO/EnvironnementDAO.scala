@@ -40,24 +40,23 @@ class EnvironnementDAO @Inject() (protected val dbConfigProvider: DatabaseConfig
     val query = environnment.filter(env => env.id === id).result.headOption
     db.run(query)
   }
-  def updateEnvironnement(env: Environnement) = {
+  def updateEnvironnement(env: Environnement): Future[Int] = {
     val query = for {
       e <- environnment
       if e.id == env.id
-    }yield e.code
+    } yield e.code
     val update = query.update(env.code)
-    update.statements.head
+    db.run(update)
   }
 
-  def deleteEnvironnement(id : Long) = {
-    val query = environnment.filter(_.id ===id)
+  def deleteEnvironnement(id : Long): Future[Int] = {
+    val query = environnment.filter(_.id === id)
     val action = query.delete
-    val affectedRowsCount: Future[Int] = db.run(action)
-    val sql = action.statements.head
+    db.run(action)
   }
 
   def addEnvironnement(env: Environnement):Future[Int] = {
-    val query = environnment map (e => e.code )+= env.code
+    val query = environnment map (e => e.code ) += env.code
     db.run(query)
   }
 
