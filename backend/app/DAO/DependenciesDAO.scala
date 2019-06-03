@@ -8,24 +8,29 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait DependenciesComponent{
+
+trait DependenciesComponent extends EnvironnementComponent  {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import profile.api._
 
   class DependenciesTable(tag:Tag) extends Table[Dependencies](tag,"DEPENDENCIES"){
     def id = column[Long]("ID",O.PrimaryKey,O.AutoInc)
+    def envId = column[Long]("ENVIRONNEMENT_ID")
     def dependencies = column[String]("DEPENDENCIES")
 
-    def * = (id.?,dependencies)<>(Dependencies.tupled,Dependencies.unapply)
+    def env = foreignKey("ENVIRONNEMENT_FK",envId,environnment)(_.id)
+    def * = (id.?,envId,dependencies)<>(Dependencies.tupled,Dependencies.unapply)
+
   }
+
+  lazy val dependencies = TableQuery[DependenciesTable]
 }
 
 @Singleton
 class DependenciesDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
 extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
   import profile.api._
-  val dependencies = TableQuery[DependenciesTable]
 
 
 

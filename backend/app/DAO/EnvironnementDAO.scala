@@ -9,7 +9,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 
-trait EnvironnementComponent{
+trait EnvironnementComponent extends UsersComponent with DependenciesComponent {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import profile.api._
@@ -17,17 +17,19 @@ trait EnvironnementComponent{
   class EnvironnementTable(tag: Tag) extends Table[Environnement](tag,"ENVIRONNEMENT"){
     def id = column[Long]("ID",O.PrimaryKey,O.AutoInc)
     def code  = column[String]("CODE")
+    def userId = column[Long]("USER_ID")
+    def user = foreignKey("USER_FK",userId,users)(_.id)
 
-    def * = (id.?,code)<>(Environnement.tupled,Environnement.unapply)
+    def * = (id.?,userId,code)<>(Environnement.tupled,Environnement.unapply)
   }
-
+  lazy val environnment = TableQuery[EnvironnementTable]
 }
 
 @Singleton
 class EnvironnementDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
   extends EnvironnementComponent  with HasDatabaseConfigProvider[JdbcProfile]{
   import profile.api._
-  val environnment = TableQuery[EnvironnementTable]
+
   def createIfNotExists(){
     val schema = environnment.schema
     db.run(schema.createIfNotExists).onComplete({

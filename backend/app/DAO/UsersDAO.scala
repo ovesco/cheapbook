@@ -24,14 +24,14 @@ trait UsersComponent{
 
     def * = (id.?, username,password ) <> (Users.tupled, Users.unapply)
   }
-
+  lazy val users = TableQuery[UsersTable]
 }
 
 @Singleton
 class UsersDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
   extends UsersComponent  with HasDatabaseConfigProvider[JdbcProfile] {
   import profile.api._
-  val users = TableQuery[UsersTable]
+
 
 
   def createIfNotExists(){
