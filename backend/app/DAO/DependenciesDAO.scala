@@ -48,13 +48,13 @@ extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
       if d.id === dep.id
     }yield d.dependencies
     val update = query.update(dep.dependencies)
+    db.run(update)
   }
 
   def deleteDepndencies(id : Long) = {
     val query = dependencies.filter(_.id ===id)
     val action = query.delete
-    val affectedRowsCount: Future[Int] = db.run(action)
-    val sql = action.statements.head
+    db.run(action)
   }
 
   def addDependencies(dep : Dependencies): Future[Int] = {

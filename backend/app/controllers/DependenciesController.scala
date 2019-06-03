@@ -3,24 +3,53 @@ package controllers
 import DAO.DependenciesDAO
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AbstractController, ControllerComponents}
+import services.Utility.gson
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class DependenciesController @Inject()(cc: ControllerComponents,dependeciesDao:DependenciesDAO) extends AbstractController(cc) {
+class DependenciesController @Inject()(cc: ControllerComponents,
+                                       depDao: DependenciesDAO)
+                                      (implicit exec: ExecutionContext) extends AbstractController(cc) {
+  
+  case class GetBody(token: String, id: Long)
+  case class PostBody(token: String, dependencies: String)
+  case class PutBody(token: String, id: Long, dependencies: String)
+  case class DeleteBody(token: String, id: Long)
 
-
-  def get() = Action { implicit request =>
-    Ok(s"get dependencies")// todo
+  def get() = Action.async { implicit request =>
+    val body: GetBody = gson.fromJson(request.body.asJson.mkString, classOf[GetBody])
+    depDao.getDependencies(body.id) map {
+      dbr => Ok(s"${dbr.get.dependencies}")
+    } recover {
+      case _ => Status(400)("Error")
+    }
   }
 
-  def post() = Action { implicit request =>
-    Ok(s"post dependencies")// todo
+  def post() = Action.async { implicit request =>
+    val body: PostBody = gson.fromJson(request.body.asJson.mkString, classOf[PostBody])
+    depDao.addDependencies(Model.Dependencies(Option.empty, body.dependencies)) map {
+      dbr => Ok(s"$dbr")
+    } recover {
+      case _ => Status(400)("Error")
+    }
   }
 
-  def put() = Action { implicit request =>
-    Ok(s"put dependencies")// todo
+  def put() = Action.async { implicit request =>
+    val body: PutBody = gson.fromJson(request.body.asJson.mkString, classOf[PutBody])
+    depDao.updateDependencies(Model.Dependencies(Option(body.id), body.dependencies)) map {
+      dbr => Ok(s"$dbr")
+    } recover {
+      case _ => Status(400)("Error")
+    }
   }
 
-  def delete() = Action { implicit request =>
-    Ok(s"delete dependencies")// todo
+  def delete() = Action.async { implicit request =>
+    val body: DeleteBody = gson.fromJson(request.body.asJson.mkString, classOf[DeleteBody])
+    depDao.deleteDepndencies(body.id) map {
+      dbr => Ok(s"$dbr")
+    } recover {
+      case _ => Status(400)("Error")
+    }
   }
 }

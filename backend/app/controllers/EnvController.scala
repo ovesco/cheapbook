@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext
 class EnvController @Inject()(cc: ControllerComponents,
                               actorSystem: ActorSystem,
                               envDao:EnvironnementDAO)
-                             (implicit exec: ExecutionContext)extends AbstractController(cc) {
+                             (implicit exec: ExecutionContext) extends AbstractController(cc) {
 
   case class GetBody(token: String, id: Long)
   case class PostBody(token: String, code: String)
