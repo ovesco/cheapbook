@@ -32,8 +32,6 @@ class DependenciesDAO @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
   import profile.api._
 
-
-
   def createIfNotExists(){
     val schema = dependencies.schema
     db.run(schema.createIfNotExists).onComplete({
@@ -56,14 +54,13 @@ extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
     db.run(update)
   }
 
-  def deleteDepndencies(id : Long) = {
-    val query = dependencies.filter(_.id ===id)
-    val action = query.delete
-    db.run(action)
+  def deleteDepndencies(id : Long,envId :Long) = {
+    val query = dependencies.filter(dep => dep.id ===id && dep.envId === envId).delete
+    db.run(query)
   }
 
   def addDependencies(dep : Dependencies): Future[Int] = {
-    val query = dependencies map (d => d.dependencies)+= dep.dependencies
+    val query = dependencies map (d => d) += dep
     db.run(query)
   }
 
