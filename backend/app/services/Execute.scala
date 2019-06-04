@@ -9,7 +9,8 @@ object Execute {
 
   def run(userId: Long, envId: Long) = {
     if (addThread(userId, envId)) startThread(userId, envId)
-    // todo wait result then remove thread
+    threads(userId, envId).join()
+    lastResults(userId, envId)
   }
 
   def stop(userId: Long, envId: Long) = {
@@ -42,6 +43,7 @@ object Execute {
     new Thread(() => {
       val output = cmd.!!
       lastResults += ((userId, envId) -> output)
+      removeThread(userId, envId)
     })
   }
 
