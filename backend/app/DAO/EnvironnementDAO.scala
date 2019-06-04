@@ -62,5 +62,9 @@ class EnvironnementDAO @Inject() (protected val dbConfigProvider: DatabaseConfig
     db.run(query)
   }
 
+  def allEnvironnement(userId:Long): Future[Seq[Environnement]]  = {
+    val query = environnment.filter(env => env.userId === userId).result
+    db.run(query)
+  }
   createIfNotExists()
 }
