@@ -67,6 +67,10 @@ extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
     db.run(query)
   }
 
+  def allDependencies(envId : Long) : Future[Seq[Dependencies]]  = {
+    val query = dependencies.filter(dep => dep.envId === envId).result
+    db.run(query)
+  }
   createIfNotExists()
 
 }
