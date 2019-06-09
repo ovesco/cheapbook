@@ -17,7 +17,6 @@ class EnvController @Inject()(cc: ControllerComponents,
 
   case class PostBody(token: String, code: String)
   case class PutBody(token: String, id: Long, code: String)
-  case class DeleteBody(token: String, id: Long)
   case class GetResponse(id: Long, code: String)
   case class GetAllResponse(envs: Array[GetResponse])
 
@@ -47,9 +46,8 @@ class EnvController @Inject()(cc: ControllerComponents,
     }
   }
 
-  def delete() = Action.async { implicit request =>
-    val body: DeleteBody = gson.fromJson(request.body.asJson.mkString, classOf[DeleteBody])
-    envDao.deleteEnvironnement(body.id,Utility.getUserFromToken(body.token).get) map {
+  def delete(token: String, id: String) = Action.async { implicit request =>
+    envDao.deleteEnvironnement(id.toLong,Utility.getUserFromToken(token).get) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")

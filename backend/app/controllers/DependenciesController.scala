@@ -15,7 +15,6 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   case class PostBody(token: String, dependency: String)
   case class PutBody(token: String, id: Long, dependency: String)
-  case class DeleteBody(token: String, id: Long)
   case class GetResponse(id: Long, envId: Long, dependency: String)
   case class GetAllResponse(envs: Array[GetResponse])
 
@@ -45,9 +44,8 @@ class DependenciesController @Inject()(cc: ControllerComponents,
     }
   }
 
-  def delete() = Action.async { implicit request =>
-    val body: DeleteBody = gson.fromJson(request.body.asJson.mkString, classOf[DeleteBody])
-    depDao.deleteDepndencies(body.id,Utility.getUserFromToken(body.token).get) map {
+  def delete(token: String, id: String) = Action.async { implicit request =>
+    depDao.deleteDepndencies(id.toLong,Utility.getUserFromToken(token).get) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")

@@ -39,7 +39,7 @@ POST    /env controllers.EnvController.post()
 PUT     /env controllers.EnvController.put()
 
 #Delete an env in db
-DELETE  /env controllers.EnvController.delete()
+DELETE  /env controllers.EnvController.delete(token, id)
 
 #Get all the environnment for a user
 GET     /env/all controllers.EnvController.getAllEnvironnments(token)
@@ -54,7 +54,7 @@ POST    /dependencies controllers.DependenciesController.post()
 PUT     /dependencies controllers.DependenciesController.put()
 
 #Delete a dependency
-DELETE  /dependencies controllers.DependenciesController.delete()
+DELETE  /dependencies controllers.DependenciesController.delete(token, id)
 
 #Get all the environnment for a user
 GET     /dependencies/all controllers.DependenciesController.getAlldependencies(token)
