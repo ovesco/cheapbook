@@ -21,12 +21,12 @@ class ExeController @Inject()(cc: ControllerComponents,
 
   def run() = Action.async { implicit request =>
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
-    var deps : Seq[Dependencies] = Nil
+    var deps = Seq[Dependencies]()
     envDao.getEnvironnement(body.envId) map {
       env =>
         if (env.isDefined){
           depDao.allDependencies(body.envId) map {
-            dep => deps
+            dep => deps ++ dep
           } recover {
             case _ => Status(400)("No dependencies found")
           }
