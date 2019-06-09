@@ -18,7 +18,8 @@ class ExeController @Inject()(cc: ControllerComponents,
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
     val deps = depDao.allDependencies(body.envId)
     val code = envDao.getEnvironnement(body.envId)
-    val result = Execute.run(Utility.getUserFromToken(body.token).get,body.envId, code ,deps)
+    //val result = Execute.run(Utility.getUserFromToken(body.token).get,body.envId, code ,deps)
+    val result = Execute.run(Utility.getUserFromToken(body.token).get,body.envId, Model.Environnement(Some(0), 0, ""),Seq())
     Ok(s"$result")
   }
 

@@ -19,12 +19,14 @@ class EnvController @Inject()(cc: ControllerComponents,
   case class PostBody(token: String, code: String)
   case class PutBody(token: String, id: Long, code: String)
   case class DeleteBody(token: String, id: Long)
-  case class AllBody(token:String)
+  case class AllBody(token: String)
+  case class GetResponse(id: Long, code: String)
+  case class GetAllResponse(envs: List[GetResponse])
 
   def get() = Action.async { implicit request =>
     val body: GetBody = gson.fromJson(request.body.asJson.mkString, classOf[GetBody])
     envDao.getEnvironnement(body.id) map {
-      dbr => Ok(s"${dbr.get.code}")
+      dbr => Ok(gson.toJson(GetResponse(dbr.get.id.get, dbr.get.code), classOf[GetResponse]))
     } recover {
       case _ => Status(400)("Error")
     }
@@ -60,7 +62,9 @@ class EnvController @Inject()(cc: ControllerComponents,
   def getAllEnvironnments()   =  Action.async { implicit request =>
     val body: AllBody = gson.fromJson(request.body.asJson.mkString, classOf[AllBody])
     envDao.allEnvironnement(Utility.getUserFromToken(body.token).get) map {
-      dbr => Ok(s"$dbr")
+      dbr =>
+        println(dbr.toList.map(e => GetResponse(e.id.get, e.code)))// TODO
+        Ok(gson.toJson(GetAllResponse(dbr.toList.map(e => GetResponse(e.id.get, e.code))), classOf[GetAllResponse]))
     } recover {
       case _ => Status(400)("Error")
     }
