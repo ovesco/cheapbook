@@ -54,8 +54,8 @@ extends DependenciesComponent  with HasDatabaseConfigProvider[JdbcProfile]{
     db.run(update)
   }
 
-  def deleteDepndencies(id : Long,envId :Long) = {
-    val query = dependencies.filter(dep => dep.id ===id && dep.envId === envId).delete
+  def deleteDependencies(id : Long) = {
+    val query = dependencies.filter(dep => dep.id === id).delete
     db.run(query)
   }
 

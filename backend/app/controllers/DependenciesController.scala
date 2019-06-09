@@ -45,7 +45,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
   }
 
   def delete(token: String, id: String) = Action.async { implicit request =>
-    depDao.deleteDepndencies(id.toLong,Utility.getUserFromToken(token).get) map {
+    depDao.deleteDependencies(id.toLong) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")
