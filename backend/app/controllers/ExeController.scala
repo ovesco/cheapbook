@@ -26,7 +26,7 @@ class ExeController @Inject()(cc: ControllerComponents,
       env =>
         if (env.isDefined){
           depDao.allDependencies(body.envId) map {
-            dep => deps ++ dep
+            dep => deps = deps ++ dep
           } recover {
             case _ => Status(400)("No dependencies found")
           }
