@@ -41,21 +41,6 @@ class ExeController @Inject()(cc: ControllerComponents,
     }
   }
 
-
-  /*
-  envDao.getEnvironnement(body.envId) map {
-      env =>
-        if (env.isDefined){
-          val result = Execute.run(Utility.getUserFromToken(body.token).get, body.envId, env.get, deps)
-          Ok(s"$result")
-        } else{
-          Status(400)("Env not found")
-        }
-    }recover{
-      case _ => Status(400)("Error")
-    }
-   */
-
   def stop() = Action { implicit request =>
     val body : stopBody = gson.fromJson(request.body.asJson.mkString,classOf[stopBody])
     val result = Execute.stop(Utility.getUserFromToken(body.token).get,body.envId)
