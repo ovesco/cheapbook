@@ -23,14 +23,14 @@ POST    /login controllers.UserController.login()
 POST    /logout controllers.UserController.logout()
 
 #Run the code in docker and send the result to frontend
-GET     /run controllers.ExeController.run()
+POST     /run controllers.ExeController.run()
 
 #Stop the code running in docker environnment
-GET     /stop controllers.ExeController.stop()
+POST     /stop controllers.ExeController.stop()
 
 
 #Get all the envs in the DB
-GET     /env controllers.EnvController.get()
+GET     /env controllers.EnvController.get(token, id)
 
 #Create an env in db
 POST    /env controllers.EnvController.post()
@@ -42,7 +42,7 @@ PUT     /env controllers.EnvController.put()
 DELETE  /env controllers.EnvController.delete()
 
 #Get all the environnment for a user
-GET     /env/all controllers.EnvController.getAllEnvironnments()
+GET     /env/all controllers.EnvController.getAllEnvironnments(token)
 
 #Get all the dependencies of an env in db
 GET     /dependencies controllers.DependenciesController.get()
