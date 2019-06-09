@@ -45,7 +45,7 @@ DELETE  /env controllers.EnvController.delete()
 GET     /env/all controllers.EnvController.getAllEnvironnments(token)
 
 #Get all the dependencies of an env in db
-GET     /dependencies controllers.DependenciesController.get()
+GET     /dependencies controllers.DependenciesController.get(id)
 
 #Create a dependency for an env
 POST    /dependencies controllers.DependenciesController.post()
@@ -57,4 +57,4 @@ PUT     /dependencies controllers.DependenciesController.put()
 DELETE  /dependencies controllers.DependenciesController.delete()
 
 #Get all the environnment for a user
-GET     /dependencies/all controllers.DependenciesController.getAlldependencies()
+GET     /dependencies/all controllers.DependenciesController.getAlldependencies(token)

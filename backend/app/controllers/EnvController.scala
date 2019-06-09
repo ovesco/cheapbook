@@ -24,7 +24,7 @@ class EnvController @Inject()(cc: ControllerComponents,
   case class GetAllResponse(envs: Array[GetResponse])
 
   def get(token: String, id: String) = Action.async { implicit request =>
-    envDao.getEnvironnement(id.toLong) map {// TODO check token
+    envDao.getEnvironnement(id.toLong,Utility.getUserFromToken(token).get) map {// TODO check token
       dbr => Ok(gson.toJson(GetResponse(dbr.get.id.get, dbr.get.code), classOf[GetResponse]))
     } recover {
       case _ => Status(400)("Error")

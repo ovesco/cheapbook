@@ -38,10 +38,11 @@ class EnvironnementDAO @Inject() (protected val dbConfigProvider: DatabaseConfig
     })
   }
 
-  def getEnvironnement(id : Long):Future[Option[Environnement]] = {
-    val query = environnment.filter(env => env.id === id).result.headOption
+  def getEnvironnement(id : Long,userId : Long):Future[Option[Environnement]] = {
+    val query = environnment.filter(env => env.id === id && env.userId === userId).result.headOption
     db.run(query)
   }
+
   def updateEnvironnement(env: Environnement): Future[Int] = {
     val query = for {
       e <- environnment

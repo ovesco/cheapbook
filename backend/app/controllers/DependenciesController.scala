@@ -21,9 +21,8 @@ class DependenciesController @Inject()(cc: ControllerComponents,
   case class GetResponse(id: Long, envId: Long, dependency: String)
   case class GetAllResponse(envs: Array[GetResponse])
 
-  def get() = Action.async { implicit request =>
-    val body: GetBody = gson.fromJson(request.body.asJson.mkString, classOf[GetBody])
-    depDao.getDependencies(body.id) map {
+  def get(id:String) = Action.async { implicit request =>
+    depDao.getDependencies(id.toLong) map {
       dbr => Ok(gson.toJson(GetResponse(dbr.get.id.get, dbr.get.envId, dbr.get.dependencies), classOf[GetResponse]))
     } recover {
       case _ => Status(400)("Error")
@@ -57,9 +56,8 @@ class DependenciesController @Inject()(cc: ControllerComponents,
     }
   }
 
-  def getAlldependencies() = Action.async { implicit request =>
-    val body: AllBody = gson.fromJson(request.body.asJson.mkString, classOf[AllBody])
-    depDao.allDependencies(Utility.getUserFromToken(body.token).get) map {
+  def getAlldependencies(token:String) = Action.async { implicit request =>
+    depDao.allDependencies(Utility.getUserFromToken(token).get) map {
       dbr => Ok(gson.toJson(GetAllResponse(dbr.toArray.map(e => GetResponse(e.id.get, e.envId, e.dependencies))), classOf[GetAllResponse]))
     } recover {
       case _ => Status(400)("Error")

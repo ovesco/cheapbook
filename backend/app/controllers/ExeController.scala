@@ -22,7 +22,7 @@ class ExeController @Inject()(cc: ControllerComponents,
   def run() = Action.async { implicit request =>
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
     var deps = Seq[Dependencies]()
-    envDao.getEnvironnement(body.envId) map {
+    envDao.getEnvironnement(body.envId,Utility.getUserFromToken(body.token).get) map {
       env =>
         if (env.isDefined){
           depDao.allDependencies(body.envId) map {
