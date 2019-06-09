@@ -13,11 +13,9 @@ class DependenciesController @Inject()(cc: ControllerComponents,
                                        depDao: DependenciesDAO)
                                       (implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  case class GetBody(token: String, id: Long)
   case class PostBody(token: String, dependency: String)
   case class PutBody(token: String, id: Long, dependency: String)
   case class DeleteBody(token: String, id: Long)
-  case class AllBody(token:String)
   case class GetResponse(id: Long, envId: Long, dependency: String)
   case class GetAllResponse(envs: Array[GetResponse])
 

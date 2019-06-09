@@ -15,11 +15,9 @@ class EnvController @Inject()(cc: ControllerComponents,
                               envDao:EnvironnementDAO)
                              (implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  case class GetBody(token: String, id: Long)
   case class PostBody(token: String, code: String)
   case class PutBody(token: String, id: Long, code: String)
   case class DeleteBody(token: String, id: Long)
-  case class AllBody(token: String)
   case class GetResponse(id: Long, code: String)
   case class GetAllResponse(envs: Array[GetResponse])
 
