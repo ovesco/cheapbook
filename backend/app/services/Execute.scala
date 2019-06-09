@@ -11,6 +11,7 @@ object Execute {
   val MAIN_FILE_START: String = "object Main extends App {\n"
   val MAIN_FILE_END: String = "\n}"
 
+  // result kinds
   val OK = 0
   val INTERRUPT = 1
   val ERROR = 2

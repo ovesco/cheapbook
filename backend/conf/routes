@@ -57,4 +57,4 @@ PUT     /dependencies controllers.DependenciesController.put()
 DELETE  /dependencies controllers.DependenciesController.delete(token, id)
 
 #Get all the environnment for a user
-GET     /dependencies/all controllers.DependenciesController.getAlldependencies(token, envId)
+GET     /dependencies/all controllers.DependenciesController.getAllDependencies(token, envId)
