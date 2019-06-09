@@ -3,6 +3,7 @@ package services
 import java.io.{File, PrintWriter}
 
 import scala.collection.immutable.HashMap
+import scala.concurrent.Future
 import scala.sys.process._
 
 object Execute {
@@ -14,7 +15,7 @@ object Execute {
   var threads: Map[(Long, Long), Thread] = new HashMap()//[(userId, envId), thread]
   var lastResults: Map[(Long, Long), String] = new HashMap()//[(userId, envId), last result]
 
-  def run(userId: Long, envId: Long) = {
+  def run(userId: Long, envId: Long, code: Future[Option[Model.Environnement]], deps: Future[Seq[Model.Dependencies]]) = {
     if (addThread(userId, envId)) startThread(userId, envId)
     threads(userId, envId).join()
     lastResults(userId, envId)
