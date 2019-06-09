@@ -16,7 +16,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
   case class PostBody(token: String, dependency: String)
   case class PutBody(token: String, id: Long, dependency: String)
   case class GetResponse(id: Long, envId: Long, dependency: String)
-  case class GetAllResponse(envs: Array[GetResponse])
+  case class GetAllResponse(deps: Array[GetResponse])
 
   def get(id:String) = Action.async { implicit request =>
     depDao.getDependencies(id.toLong) map {
