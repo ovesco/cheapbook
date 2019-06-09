@@ -15,9 +15,13 @@ object Execute {
   var lastResults: Map[(Long, Long), Option[String]] = new HashMap()//[(userId, envId), last result]
 
   def run(userId: Long, envId: Long, env: Model.Environnement, deps: Seq[Model.Dependencies]) = {
-    if (addThread(userId, envId, env, deps)) startThread(userId, envId)
-    threads(userId, envId).join()
-    lastResults(userId, envId)
+    if (addThread(userId, envId, env, deps)) {
+      startThread(userId, envId)
+      threads(userId, envId).join()
+      lastResults(userId, envId)
+    } else {
+      Option.empty
+    }
   }
 
   def stop(userId: Long, envId: Long) = {
@@ -29,15 +33,14 @@ object Execute {
     val path = ROOT_FOLDER + "/" + userId + "/" + envId
     if (!new File(path + "/hello").exists()) new File(path + "/hello/src/main/scala/").mkdirs()
 
-    //todo write code and dependencies
-    val code = env.code//"println(\"Hello World\")"
-    //val deps = List("", "")
+    val code = env.code
 
     val buildFile = new PrintWriter(new File(path + "/hello/build.sbt"))
     buildFile.write(BUILD_FILE_START)
     deps.foreach(d => buildFile.write(d + "\n"))
     buildFile.flush()
     buildFile.close()
+
     val mainFile = new PrintWriter(new File(path + "/hello/src/main/scala/Main.scala"))
     mainFile.write(MAIN_FILE_START)
     mainFile.write(code)
@@ -61,7 +64,10 @@ object Execute {
   }
 
   def stopThread(userId: Long, envId: Long) = {
-    if (threads.contains((userId, envId))) threads((userId, envId)).interrupt()
+    if (threads.contains((userId, envId))) {
+      threads((userId, envId)).interrupt()
+      lastResults += ((userId, envId) -> Some("Program interrupted !"))
+    }
   }
 
   def removeThread(userId: Long, envId: Long) = {

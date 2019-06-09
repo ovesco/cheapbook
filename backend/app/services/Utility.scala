@@ -18,5 +18,5 @@ object Utility {
   }
   def getUserFromToken(token: String): Option[Long] = userTokens.get(token)
   def removeTokenOfUser(token: String): Unit = userTokens -= token
-  def removeAllTokensOfUser(userId: Long): Unit = userTokens = userTokens.filter(_._2 != userId)// todo test
+  def removeAllTokensOfUser(userId: Long): Unit = userTokens = userTokens.filter(_._2 != userId)
 }

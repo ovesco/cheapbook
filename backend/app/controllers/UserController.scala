@@ -48,6 +48,6 @@ class UserController @Inject()(cc: ControllerComponents,
   def logout() = Action { implicit request =>
     val body: LogoutBody = gson.fromJson(request.body.asJson.mkString, classOf[LogoutBody])
     Utility.removeTokenOfUser(body.token)
-    Ok(s"You have logged out with token: ${body.token}")// todo
+    Ok(s"You have logged out with token: ${body.token}")
   }
 }
