@@ -16,8 +16,9 @@ class ExeController @Inject()(cc: ControllerComponents,
                               userDao: UsersDAO)
                              (implicit exec: ExecutionContext) extends AbstractController(cc) {
 
-  case class runBody(token : String, envId : Long)
-  case class stopBody(token : String, envId : Long)
+  case class runBody(token: String, envId : Long)
+  case class stopBody(token: String, envId : Long)
+  case class runResponse(kind: Int, output: String)
 
   def run() = Action.async { implicit request =>
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
@@ -31,8 +32,7 @@ class ExeController @Inject()(cc: ControllerComponents,
             case _ => Status(400)("No dependencies found")
           }
           val result = Execute.run(Utility.getUserFromToken(body.token).get, body.envId, env.get, deps)
-          if(result.isDefined) Ok(s"${result.get}")
-          else Status(400)("Error")
+          Ok(gson.toJson(runResponse(result._1, result._2), classOf[runResponse]))
         } else{
           Status(400)("Env not found")
         }

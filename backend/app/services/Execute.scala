@@ -11,16 +11,21 @@ object Execute {
   val MAIN_FILE_START: String = "object Main extends App {\n"
   val MAIN_FILE_END: String = "\n}"
 
-  var threads: Map[(Long, Long), Thread] = new HashMap()//[(userId, envId), thread]
-  var lastResults: Map[(Long, Long), Option[String]] = new HashMap()//[(userId, envId), last result]
+  val OK = 0
+  val INTERRUPT = 1
+  val ERROR = 2
+  val BUSY = 3
 
-  def run(userId: Long, envId: Long, env: Model.Environnement, deps: Seq[Model.Dependencies]) = {
+  var threads: Map[(Long, Long), Thread] = new HashMap()//[(userId, envId), thread]
+  var lastResults: Map[(Long, Long), (Int, String)] = new HashMap()//[(userId, envId), (kind of result, last result)]; kind of result: ok, interrupted, error, busy
+
+  def run(userId: Long, envId: Long, env: Model.Environnement, deps: Seq[Model.Dependencies]): (Int, String) = {
     if (addThread(userId, envId, env, deps)) {
       startThread(userId, envId)
       threads(userId, envId).join()
       lastResults(userId, envId)
     } else {
-      Option.empty
+      (BUSY, "Another thread is already running")
     }
   }
 
@@ -66,7 +71,7 @@ object Execute {
   def stopThread(userId: Long, envId: Long) = {
     if (threads.contains((userId, envId))) {
       threads((userId, envId)).interrupt()
-      lastResults += ((userId, envId) -> Some("Program interrupted !"))
+      lastResults += ((userId, envId) -> (INTERRUPT, "Program interrupted !"))
     }
   }
 
@@ -80,9 +85,9 @@ object Execute {
       try {
         val output = cmd.!!
         val result = output.split("\n").filter(s => !s.startsWith("[info] ") && !s.startsWith("[success] ")).mkString("\n")
-        lastResults += ((userId, envId) -> Some(result))
+        lastResults += ((userId, envId) -> (OK, result))
       } catch {
-        case _: Exception => lastResults += ((userId, envId) -> Option.empty)
+        case _: Exception => lastResults += ((userId, envId) -> (ERROR, "Error"))
       }
       removeThread(userId, envId)
     })

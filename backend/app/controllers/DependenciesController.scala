@@ -52,8 +52,8 @@ class DependenciesController @Inject()(cc: ControllerComponents,
     }
   }
 
-  def getAlldependencies(token:String) = Action.async { implicit request =>
-    depDao.allDependencies(Utility.getUserFromToken(token).get) map {
+  def getAlldependencies(token:String, envId: String) = Action.async { implicit request =>
+    depDao.allDependencies(envId.toLong) map {
       dbr => Ok(gson.toJson(GetAllResponse(dbr.toArray.map(e => GetResponse(e.id.get, e.envId, e.dependencies))), classOf[GetAllResponse]))
     } recover {
       case _ => Status(400)("Error")
