@@ -52,6 +52,9 @@ export default {
         aForm: Form,
         aFormItem: Form.Item,
     },
+    mounted() {
+        if (this.$store.state.token) this.$router.push({ name: 'editor' });
+    },
     data() {
         return {
             register: false,
