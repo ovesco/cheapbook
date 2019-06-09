@@ -16,7 +16,9 @@ class ExeController @Inject()(cc: ControllerComponents,
   case class stopBody(token : String, envId : Long)
   def run() = Action { implicit request =>
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
-    val result = Execute.run(Utility.getUserFromToken(body.token).get,body.envId)
+    val deps = depDao.allDependencies(body.envId)
+    val code = envDao.getEnvironnement(body.envId)
+    val result = Execute.run(Utility.getUserFromToken(body.token).get,body.envId, code ,deps)
     Ok(s"$result")
   }
 
