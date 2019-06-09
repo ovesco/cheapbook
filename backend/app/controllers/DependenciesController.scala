@@ -14,14 +14,17 @@ class DependenciesController @Inject()(cc: ControllerComponents,
                                       (implicit exec: ExecutionContext) extends AbstractController(cc) {
 
   case class GetBody(token: String, id: Long)
-  case class PostBody(token: String, dependencies: String)
-  case class PutBody(token: String, id: Long, dependencies: String)
+  case class PostBody(token: String, dependency: String)
+  case class PutBody(token: String, id: Long, dependency: String)
   case class DeleteBody(token: String, id: Long)
   case class AllBody(token:String)
+  case class GetResponse(id: Long, envId: Long, dependency: String)
+  case class GetAllResponse(envs: Array[GetResponse])
+
   def get() = Action.async { implicit request =>
     val body: GetBody = gson.fromJson(request.body.asJson.mkString, classOf[GetBody])
     depDao.getDependencies(body.id) map {
-      dbr => Ok(s"${dbr.get.dependencies}")
+      dbr => Ok(gson.toJson(GetResponse(dbr.get.id.get, dbr.get.envId, dbr.get.dependencies), classOf[GetResponse]))
     } recover {
       case _ => Status(400)("Error")
     }
@@ -29,7 +32,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   def post() = Action.async { implicit request =>
     val body: PostBody = gson.fromJson(request.body.asJson.mkString, classOf[PostBody])
-    depDao.addDependencies(Model.Dependencies(Option.empty, Utility.getUserFromToken(body.token).get, body.dependencies)) map {
+    depDao.addDependencies(Model.Dependencies(Option.empty, Utility.getUserFromToken(body.token).get, body.dependency)) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")
@@ -38,7 +41,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   def put() = Action.async { implicit request =>
     val body: PutBody = gson.fromJson(request.body.asJson.mkString, classOf[PutBody])
-    depDao.updateDependencies(Model.Dependencies(Option(body.id), Utility.getUserFromToken(body.token).get, body.dependencies)) map {
+    depDao.updateDependencies(Model.Dependencies(Option(body.id), Utility.getUserFromToken(body.token).get, body.dependency)) map {
       dbr => Ok(s"$dbr")
     } recover {
       case _ => Status(400)("Error")
@@ -57,7 +60,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
   def getAlldependencies() = Action.async { implicit request =>
     val body: AllBody = gson.fromJson(request.body.asJson.mkString, classOf[AllBody])
     depDao.allDependencies(Utility.getUserFromToken(body.token).get) map {
-      dbr => Ok(s"$dbr")
+      dbr => Ok(gson.toJson(GetAllResponse(dbr.toArray.map(e => GetResponse(e.id.get, e.envId, e.dependencies))), classOf[GetAllResponse]))
     } recover {
       case _ => Status(400)("Error")
     }
