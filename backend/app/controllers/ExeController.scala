@@ -31,7 +31,8 @@ class ExeController @Inject()(cc: ControllerComponents,
             case _ => Status(400)("No dependencies found")
           }
           val result = Execute.run(Utility.getUserFromToken(body.token).get, body.envId, env.get, deps)
-          Ok(s"$result")
+          if(result.isDefined) Ok(s"$result")
+          else Status(400)("Error")
         } else{
           Status(400)("Env not found")
         }
