@@ -18,15 +18,15 @@ object Execute {
   val BUSY = 3
 
   var threads: Map[(Long, Long), Thread] = new HashMap()//[(userId, envId), thread]
-  var lastResults: Map[(Long, Long), (Int, String)] = new HashMap()//[(userId, envId), (kind of result, last result)]; kind of result: ok, interrupted, error, busy
+  var lastResults: Map[(Long, Long), (Int, Array[String])] = new HashMap()//[(userId, envId), (kind of result, lines of result)]; kind of result: ok, interrupted, error, busy
 
-  def run(userId: Long, envId: Long, env: Model.Environnement, deps: Seq[Model.Dependencies]): (Int, String) = {
+  def run(userId: Long, envId: Long, env: Model.Environnement, deps: Seq[Model.Dependencies]): (Int, Array[String]) = {
     if (addThread(userId, envId, env, deps)) {
       startThread(userId, envId)
       threads(userId, envId).join()
       lastResults(userId, envId)
     } else {
-      (BUSY, "Another thread is already running")
+      (BUSY, Array("Another thread is already running"))
     }
   }
 
@@ -72,7 +72,7 @@ object Execute {
   def stopThread(userId: Long, envId: Long) = {
     if (threads.contains((userId, envId))) {
       threads((userId, envId)).interrupt()
-      lastResults += ((userId, envId) -> (INTERRUPT, "Program interrupted !"))
+      lastResults += ((userId, envId) -> (INTERRUPT, Array("Program interrupted !")))
     }
   }
 
@@ -85,10 +85,10 @@ object Execute {
       createProject(userId, envId, env, deps)
       try {
         val output = cmd.!!
-        val result = output.split("\n").filter(s => !s.startsWith("[info] ") && !s.startsWith("[success] ")).mkString("\n")
+        val result: Array[String] = output.split("\n").filter(s => !s.startsWith("[info] ") && !s.startsWith("[success] "))
         lastResults += ((userId, envId) -> (OK, result))
       } catch {
-        case _: Exception => lastResults += ((userId, envId) -> (ERROR, "Error"))
+        case _: Exception => lastResults += ((userId, envId) -> (ERROR, Array("Error")))
       }
       removeThread(userId, envId)
     })

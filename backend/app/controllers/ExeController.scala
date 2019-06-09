@@ -18,7 +18,7 @@ class ExeController @Inject()(cc: ControllerComponents,
 
   case class runBody(token: String, envId : Long)
   case class stopBody(token: String, envId : Long)
-  case class runResponse(kind: Int, output: String)
+  case class runResponse(kind: Int, output: Array[String])
 
   def run() = Action.async { implicit request =>
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
