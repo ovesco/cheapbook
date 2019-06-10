@@ -20,6 +20,13 @@ class UserController @Inject()(cc: ControllerComponents,
   case class LoginResponse(token: String)
   case class LogoutBody(token: String)
 
+  /**
+    * Function to register a user
+    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * - username : String => the username of the user
+    * - password : String => the password of the user
+    * @return An Ok or a Status 400 if failed
+    */
   def register() = Action.async { implicit request =>
     val body: RegisterBody = gson.fromJson(request.body.asJson.mkString, classOf[RegisterBody])
     usersDao.createUser(Model.Users(Option.empty, body.username, body.password)) map {
@@ -28,6 +35,14 @@ class UserController @Inject()(cc: ControllerComponents,
         case _ => Status(400)("Unable to register")
       }
   }
+
+  /**
+    * Function to login a user
+    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * - username : String => the username of the user
+    * - password : String => the password of the user
+    * @return An Ok with the session token or  Status 400 if failed
+    */
 
   def login() = Action.async { implicit request =>
     val body: LoginBody = gson.fromJson(request.body.asJson.mkString, classOf[LoginBody])
@@ -45,6 +60,12 @@ class UserController @Inject()(cc: ControllerComponents,
     }
   }
 
+  /**
+    * Function to logout a user
+    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * - token : String => the session token of the user
+    * @return An Ok
+    */
   def logout() = Action { implicit request =>
     val body: LogoutBody = gson.fromJson(request.body.asJson.mkString, classOf[LogoutBody])
     Utility.removeTokenOfUser(body.token)

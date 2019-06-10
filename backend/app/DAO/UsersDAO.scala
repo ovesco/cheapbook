@@ -33,7 +33,9 @@ class UsersDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   import profile.api._
 
 
-
+  /**
+    * Create the schema in databse if it is not already there
+    */
   def createIfNotExists(){
     val schema = users.schema
     db.run(schema.createIfNotExists).onComplete({
@@ -42,16 +44,29 @@ class UsersDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     })
   }
 
+  /**
+    * Add a user to the databse
+    * @param user the user to be addes
+    * @return 1 if added 0 if not
+    */
   def createUser(user: Users):Future[Int] ={
     val query = users.map(p => (p.username,p.password)) += (user.username,user.password)
     db.run(query)
   }
+
+  /**
+    * Return a user from the database
+    * @param username the username of the user
+    * @param password the password of the user
+    * @return the user id the password and the username match
+    */
 
   def getUser(username:String,password: String):Future[Option[Users]] = {
     val query = users.filter(user => user.username === username && user.password === password).result.headOption
     db.run(query)
   }
 
+  //create the database at the creation of the DAO
   createIfNotExists()
 
 }
