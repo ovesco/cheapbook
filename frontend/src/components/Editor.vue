@@ -1,6 +1,6 @@
 <template>
     <div>
-        <codemirror :options="cmOptions" :value="sample" ref="cm" />
+        <codemirror :options="cmOptions" v-model="code" ref="cm" />
     </div>
 </template>
 
@@ -37,15 +37,41 @@ import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/indent-fold';
 import 'codemirror/addon/fold/markdown-fold';
 import 'codemirror/addon/fold/xml-fold';
-import Sample from '../assets/test';
 
 export default {
     components: {
         codemirror,
     },
+    mounted() {
+        this.update();
+    },
     watch: {
         theme(theme) {
             this.$refs.cm.codemirror.setOption('theme', theme);
+        },
+        env() {
+            this.update();
+        },
+        code(newCode) {
+            if (!this.env) return;
+            if (this.timer !== null) clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.$store.dispatch('updateCode', newCode).then(() => {
+                    this.timer = null;
+                });
+            }, 1000);
+        },
+    },
+    methods: {
+        update() {
+            const item = this.env;
+            if (item === null || item === undefined) this.code = 'No environment selected';
+            else this.code = item.code;
+        },
+    },
+    computed: {
+        env() {
+            return this.$store.state.env;
         },
     },
     props: ['theme'],
@@ -66,17 +92,16 @@ export default {
                 mode: 'text/x-scala',
                 // hint.js options
                 hintOptions: {
-                    // 当匹配只有一项的时候是否自动补全
                     completeSingle: false,
                 },
-                // 快捷键 可提供三种模式 sublime、emacs、vim
                 keyMap: 'sublime',
                 matchBrackets: true,
                 showCursorWhenSelecting: true,
                 theme: this.theme,
                 extraKeys: { Ctrl: 'autocomplete' },
             },
-            sample: Sample,
+            code: '',
+            timer: null,
         };
     },
 };
@@ -84,6 +109,6 @@ export default {
 
 <style lang="scss">
     .CodeMirror {
-        height: 70vh;
+        max-height: 70vh;
     }
 </style>

@@ -2,32 +2,48 @@
     <div>
         <theme v-model="theme" :current="theme" :show="chooseTheme"
                @close="chooseTheme = false, keys = []" />
-        <environments v-model="environment" :show="chooseEnvironment"
-                      @close="chooseEnvironment = false, keys = []" />
+        <environments :show="chooseEnvironment" @close="chooseEnvironment = false, keys = []" />
+        <dependencies v-if="$store.state.env !== null" :show="updateDeps"
+                      @close="updateDeps = false, keys = []" />
         <a-layout>
             <a-layout-header>
                 <a-menu v-model="keys" theme="dark" mode="horizontal" :style="{lineHeight: '64px'}">
                     <a-menu-item key="environments" @click="chooseEnvironment = true">
                         Environments
                     </a-menu-item>
-                    <a-menu-item @click="$router.push('/')" key="close">Close session</a-menu-item>
+                    <a-menu-item @click="$store.commit('setToken', null)" key="close">
+                        Close session
+                    </a-menu-item>
                     <a-menu-item key="theme" @click="chooseTheme = true">Theme</a-menu-item>
                 </a-menu>
             </a-layout-header>
             <a-layout-content>
                 <main>
-                    <div class="toolbar">
-                        <a-button-group>
-                            <a-button icon="caret-right">Run</a-button>
-                            <a-button>Stop</a-button>
-                            <a-button>Restart</a-button>
+                    <div class="toolbar" v-if="$store.state.env">
+                        <a-button-group class="mr-2">
+                            <a-button icon="caret-right" @click="run"
+                                      :loading="$store.state.running"
+                                      :disabled="$store.state.running">Run</a-button>
+                            <a-button @click="stop" :disabled="!$store.state.running">
+                                Stop
+                            </a-button>
                         </a-button-group>
-                        <a-button-group>
-                            <a-button>Dependencies</a-button>
-                        </a-button-group>
+                        <div style="display:flex;align-items:center;">
+                            <a-button @click="updateDeps = true">Dependencies</a-button>
+                            <div style="margin-left:1rem;">{{ $store.state.deps.length }}
+                                dependencies</div>
+                        </div>
                     </div>
                     <a-card :bodyStyle="{padding: 0}">
                         <editor :theme="theme" />
+                    </a-card>
+                    <div style="height:5px;"></div>
+                    <a-card :bodyStyle="{padding: '5px', background: bg}"
+                            v-if="$store.state.output">
+                        <div>
+                            <div v-for="item in format($store.state.output.output)"
+                               :key="item">{{ item }}</div>
+                        </div>
                     </a-card>
                 </main>
             </a-layout-content>
@@ -45,12 +61,14 @@ import {
 import Editor from '../components/Editor.vue';
 import Theme from '../components/Theme.vue';
 import Environments from '../components/Environments.vue';
+import Dependencies from '../components/Dependencies.vue';
 
 export default {
     components: {
         Editor,
         Theme,
         Environments,
+        Dependencies,
         aLayout: Layout,
         aLayoutHeader: Layout.Header,
         aLayoutContent: Layout.Content,
@@ -66,8 +84,26 @@ export default {
             keys: [],
             theme: 'base16-light',
             chooseEnvironment: false,
-            environment: 2,
+            updateDeps: false,
         };
+    },
+    computed: {
+        bg() {
+            const { output } = this.$store.state;
+            if (!output || output.kind === 0) return 'white';
+            return '#FFCECE';
+        },
+    },
+    methods: {
+        async run() {
+            await this.$store.dispatch('run');
+        },
+        async stop() {
+            await this.$store.dispatch('stop');
+        },
+        format(output) {
+            return output.map(l => l.replace(/(\r\n|\n|\r)/gm, '').trim()).filter(l => !l.startsWith('|'));
+        },
     },
 };
 </script>

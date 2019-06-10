@@ -12,12 +12,12 @@
                         </a-input>
                     </a-form-item>
                     <a-form-item>
-                        <a-input placeholder="Password" v-decorator="['password']">
+                        <a-input placeholder="Password" type="password" v-decorator="['password']">
                             <a-icon slot="prefix" type="unlock" />
                         </a-input>
                     </a-form-item>
                     <a-form-item v-if="register">
-                        <a-input v-decorator="['password2']"
+                        <a-input v-decorator="['password2']" type="password"
                                  placeholder="Confirm password">
                             <a-icon slot="prefix" type="unlock" />
                         </a-input>
@@ -51,6 +51,9 @@ export default {
         aIcon: Icon,
         aForm: Form,
         aFormItem: Form.Item,
+    },
+    mounted() {
+        if (this.$store.state.token) this.$router.push({ name: 'editor' });
     },
     data() {
         return {
