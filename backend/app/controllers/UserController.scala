@@ -22,7 +22,7 @@ class UserController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to register a user
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - username : String => the username of the user
     * - password : String => the password of the user
     * @return An Ok or a Status 400 if failed
@@ -38,7 +38,7 @@ class UserController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to login a user
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - username : String => the username of the user
     * - password : String => the password of the user
     * @return An Ok with the session token or  Status 400 if failed
@@ -62,7 +62,7 @@ class UserController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to logout a user
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - token : String => the session token of the user
     * @return An Ok
     */

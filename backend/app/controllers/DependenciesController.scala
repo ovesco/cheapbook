@@ -34,7 +34,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to add a dependency to the database
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - token : String => the Session token of the user
     * - envid : Long   => the id of the environment that will use the dependency
     * - dependency : String => the string of the dependency
@@ -51,7 +51,7 @@ class DependenciesController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to modify a dependency
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - token      : String => the Session token of the user
     * - id         : Long   => the id  of the dependency to change
     * - envid      : Long   => the id of the environment that will use the dependency
