@@ -37,7 +37,7 @@ class EnvController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to add an environnment  to the database
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - token : String => the Session token of the user
     * - code  : String => the code you want to execute in your environment
     * @return The value of the SQL request or a Status 400 if failed
@@ -53,7 +53,7 @@ class EnvController @Inject()(cc: ControllerComponents,
 
   /**
     * Function to modify an environment
-    * The informations needed have to be from a JSON in the body of the request and are the following :
+    * The information needed have to be from a JSON in the body of the request and are the following :
     * - token : String => the Session token of the user
     * - id    : Long   => the id  of the dependency to change
     * - code  : String => the string corresponding to the code
