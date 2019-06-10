@@ -109,6 +109,6 @@ export default {
 
 <style lang="scss">
     .CodeMirror {
-        height: 70vh;
+        max-height: 70vh;
     }
 </style>

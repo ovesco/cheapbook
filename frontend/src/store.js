@@ -38,6 +38,7 @@ export default new Vuex.Store({
         },
         selectEnvironment(state, env) {
             state.env = env;
+            state.output = null;
         },
         updateCode(state, code) {
             state.env.code = code;
@@ -78,8 +79,9 @@ export default new Vuex.Store({
             await instance.put('/env', { token: state.token, id: state.env.id, code });
             commit('updateCode', code);
         },
-        async selectEnvironment({ state, commit }, id) {
+        async selectEnvironment({ state, commit, dispatch }, id) {
             const env = state.environments.find(i => i.id === id);
+            await dispatch('refreshDependencies');
             commit('selectEnvironment', env);
         },
         async refreshDependencies({ state }) {

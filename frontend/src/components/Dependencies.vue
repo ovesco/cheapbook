@@ -2,6 +2,14 @@
     <div>
         <a-modal @ok="handleAdd" :confirmLoading="confirm" @cancel="adding = false"
                  :visible="adding" title="Add a dependency">
+            <div>
+                Dependencies must come from the <a href="https://mvnrepository.com">Maven repositories</a>
+                and be included in SBT format, for example
+                <br/>
+                <div class="code">
+                    libraryDependencies += "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.2"
+                </div>
+            </div>
             <a-input v-model="dependance" placeholder="Dependency line" />
         </a-modal>
         <drawer title="Environments" :width="400"
@@ -75,3 +83,13 @@ export default {
     props: ['show'],
 };
 </script>
+
+<style scoped>
+   .code {
+        background: #eee;
+        font-size:0.8rem;
+        padding:0.5rem;
+       margin:0.5rem 0;
+        border-radius:5px;
+    }
+</style>

@@ -28,18 +28,21 @@
                                 Stop
                             </a-button>
                         </a-button-group>
-                        <a-button-group>
+                        <div style="display:flex;align-items:center;">
                             <a-button @click="updateDeps = true">Dependencies</a-button>
-                        </a-button-group>
+                            <div style="margin-left:1rem;">{{ $store.state.deps.length }}
+                                dependencies</div>
+                        </div>
                     </div>
                     <a-card :bodyStyle="{padding: 0}">
                         <editor :theme="theme" />
                     </a-card>
                     <div style="height:5px;"></div>
-                    <a-card :bodyStyle="{padding: '5px'}" v-if="$store.state.output">
+                    <a-card :bodyStyle="{padding: '5px', background: bg}"
+                            v-if="$store.state.output">
                         <div>
-                            <p class="m-0" v-for="item in format($store.state.output.output)"
-                               :key="item">{{ item }}</p>
+                            <div v-for="item in format($store.state.output.output)"
+                               :key="item">{{ item }}</div>
                         </div>
                     </a-card>
                 </main>
@@ -54,7 +57,6 @@ import {
     Menu,
     Button,
     Card,
-    Spin,
 } from 'ant-design-vue';
 import Editor from '../components/Editor.vue';
 import Theme from '../components/Theme.vue';
@@ -68,7 +70,6 @@ export default {
         Environments,
         Dependencies,
         aLayout: Layout,
-        aSpin: Spin,
         aLayoutHeader: Layout.Header,
         aLayoutContent: Layout.Content,
         aMenu: Menu,
@@ -85,6 +86,13 @@ export default {
             chooseEnvironment: false,
             updateDeps: false,
         };
+    },
+    computed: {
+        bg() {
+            const { output } = this.$store.state;
+            if (!output || output.kind === 0) return 'white';
+            return '#FFCECE';
+        },
     },
     methods: {
         async run() {
