@@ -81,8 +81,8 @@ export default new Vuex.Store({
         },
         async selectEnvironment({ state, commit, dispatch }, id) {
             const env = state.environments.find(i => i.id === id);
-            await dispatch('refreshDependencies');
             commit('selectEnvironment', env);
+            await dispatch('refreshDependencies');
         },
         async refreshDependencies({ state }) {
             const { data: { deps } } = await instance.get(`/dependencies/all?token=${state.token}&envId=${state.env.id}`);
