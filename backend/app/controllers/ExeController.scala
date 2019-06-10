@@ -20,6 +20,13 @@ class ExeController @Inject()(cc: ControllerComponents,
   case class stopBody(token: String, envId : Long)
   case class runResponse(kind: Int, output: Array[String])
 
+  /**
+    * Function to run an environment
+    * The information needed have to be from a JSON in the body of the request and are the following :
+    * - token : String => the Session token of the user
+    * - envId : Long => id of the environment to run
+    * @return An Ok with the output and its kind in JSON or a Status 400 if failed
+    */
   def run() = Action.async { implicit request =>
     val body : runBody = gson.fromJson(request.body.asJson.mkString,classOf[runBody])
     var deps = Seq[Dependencies]()
@@ -41,6 +48,13 @@ class ExeController @Inject()(cc: ControllerComponents,
     }
   }
 
+  /**
+    * Function to stop an environment
+    * The information needed have to be from a JSON in the body of the request and are the following :
+    * - token : String => the Session token of the user
+    * - envId : Long => id of the environment to stop
+    * @return An Ok or a Status 400 if failed
+    */
   def stop() = Action { implicit request =>
     val body : stopBody = gson.fromJson(request.body.asJson.mkString,classOf[stopBody])
     val result = Execute.stop(Utility.getUserFromToken(body.token).get,body.envId)
